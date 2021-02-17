@@ -28,28 +28,40 @@ namespace ConsoleUI
         private static void ProductTest()
         {
             ProductManager productManager = new ProductManager(new EfProductDal());
-            Console.WriteLine("---------------All products listed-------------------");
-            foreach (var product in productManager.GetAll())
+            var result = productManager.GetProductDetails();
+            if (result.Success)
             {
-                Console.WriteLine(product.ProductName);
+                foreach (var product in result.Data)
+                {
+                    Console.WriteLine(product.ProductId + "-" + product.ProductName + "---" + product.CategoryName);
+                }
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+            Console.WriteLine("---------------All products listed-------------------");
+            foreach (var product in productManager.GetAll().Data)
+            {
+                Console.WriteLine(product.ProductId + "-" + product.ProductName);
             }
 
             Console.WriteLine("---------------Products listed by desired unit price-----------------------");
-            foreach (var product in productManager.GetByUnitPrice(40, 100))
+            foreach (var product in productManager.GetByUnitPrice(40, 100).Data)
             {
-                Console.WriteLine(product.ProductName);
+                Console.WriteLine(product.ProductId + "-" + product.ProductName);
             }
 
             Console.WriteLine("-----------------Products listed by category id--------------------");
-            foreach (var product in productManager.GetAllByCategoryId(5))
+            foreach (var product in productManager.GetAllByCategoryId(5).Data)
             {
-                Console.WriteLine(product.ProductName);
+                Console.WriteLine(product.ProductId + "-" + product.ProductName);
             }
 
             Console.WriteLine("-----------------Products listed with category name--------------------");
-            foreach (var product in productManager.GetProductDetails())
+            foreach (var product in productManager.GetProductDetails().Data)
             {
-                Console.WriteLine(product.ProductName + "/" + product.CategoryName);
+                Console.WriteLine(product.ProductId + "-" + product.ProductName + "---" + product.CategoryName);
             }
         }
     }
