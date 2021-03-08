@@ -13,19 +13,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-
-
 namespace WebAPI
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            var host =new WebHostBuilder()
+            var host = new WebHostBuilder()
                 .UseKestrel()
-                .ConfigureServices(services=>
+                .ConfigureServices(services =>
                 services.AddSingleton<IServiceProviderFactory<ContainerBuilder>>(new AutofacServiceProviderFactory()))
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                   .ConfigureAppConfiguration((builderContext, config) =>
+                   {
+                       Microsoft.AspNetCore.Hosting.IHostingEnvironment env = builderContext.HostingEnvironment;
+
+                       config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                           .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                   })
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
