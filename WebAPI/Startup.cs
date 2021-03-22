@@ -36,8 +36,8 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             //Autofac, Ninject, CastleWindsor, StructMap, LightInject, DryInject --> IoC Container          
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);           
-
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddCors();
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -70,10 +70,10 @@ namespace WebAPI
             else
             {
                 app.UseHsts();
-            }            
+            }
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
             app.UseHttpsRedirection();
             app.UseMvc();
-            app.UseCors();
             //app.UseRouting();
             app.UseAuthentication();
             //app.ConfigureCustomExceptionMiddleware();            
